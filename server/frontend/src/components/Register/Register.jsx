@@ -1,106 +1,32 @@
 import React, { useState } from "react";
 
-function Register() {
-  const [userName, setUserName] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+export default function Register() {
+  const [form, setForm] = useState({
+    username: "", first_name: "", last_name: "", email: "", password: ""
+  });
   const [message, setMessage] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const response = await fetch("/djangoapp/registration/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        userName,
-        firstName,
-        lastName,
-        email,
-        password,
-      }),
-    });
-    const data = await response.json();
-    if (data.status === "Registered") {
-      setMessage("Registration successful! You can now log in.");
-    } else {
-      setMessage(data.error || "Registration failed. Please try again.");
-    }
+  const update = (event) => {
+    setForm({ ...form, [event.target.name]: event.target.value });
+  };
+
+  const submit = async (event) => {
+    event.preventDefault();
+    setMessage("Connect this form to the registration endpoint from your course project.");
   };
 
   return (
-    <div className="register-container">
-      <h2>Sign Up</h2>
-      <p>Create a new account to access Best Cars Dealership.</p>
-      {message && <p className="message">{message}</p>}
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="username">Username</label>
-          <input
-            type="text"
-            id="username"
-            placeholder="Username"
-            value={userName}
-            onChange={(e) => setUserName(e.target.value)}
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="firstName">First Name</label>
-          <input
-            type="text"
-            id="firstName"
-            placeholder="First Name"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="lastName">Last Name</label>
-          <input
-            type="text"
-            id="lastName"
-            placeholder="Last Name"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-
-        <button type="submit" className="btn-register">
-          Register
-        </button>
+    <main className="register-page">
+      <h1>Sign-up</h1>
+      <form onSubmit={submit}>
+        <label>Username<input name="username" value={form.username} onChange={update} required /></label>
+        <label>First Name<input name="first_name" value={form.first_name} onChange={update} required /></label>
+        <label>Last Name<input name="last_name" value={form.last_name} onChange={update} required /></label>
+        <label>Email<input type="email" name="email" value={form.email} onChange={update} required /></label>
+        <label>Password<input type="password" name="password" value={form.password} onChange={update} required /></label>
+        <button type="submit">Register</button>
       </form>
-    </div>
+      {message && <p role="status">{message}</p>}
+    </main>
   );
 }
-
-export default Register;
